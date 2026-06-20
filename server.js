@@ -165,6 +165,46 @@ app.put('/products/:id', (req, res) => {
   }
 });
 
+// Helper: Decrease stock for order items
+function decreaseStock(items) {
+  const products = loadJsonFile('products.json');
+  let changed = false;
+  items.forEach(item => {
+    const product = products.find(p => p.id === item.product?.id || p.id === item.productId);
+    if (product && product.stock !== undefined) {
+      product.stock = Math.max(0, product.stock - (item.quantity || 1));
+      changed = true;
+    }
+  });
+  if (changed) {
+    try {
+      fs.writeFileSync(path.join(__dirname, 'data', 'products.json'), JSON.stringify(products, null, 2), 'utf8');
+    } catch (err) {
+      console.error('Error updating stock:', err);
+    }
+  }
+}
+
+// Helper: Restore stock for cancelled order items
+function restoreStock(items) {
+  const products = loadJsonFile('products.json');
+  let changed = false;
+  items.forEach(item => {
+    const product = products.find(p => p.id === item.product?.id || p.id === item.productId);
+    if (product && product.stock !== undefined) {
+      product.stock += (item.quantity || 1);
+      changed = true;
+    }
+  });
+  if (changed) {
+    try {
+      fs.writeFileSync(path.join(__dirname, 'data', 'products.json'), JSON.stringify(products, null, 2), 'utf8');
+    } catch (err) {
+      console.error('Error restoring stock:', err);
+    }
+  }
+}
+
 // 4. POST /orders - Create new order from Zalo Mini App
 app.post('/orders', (req, res) => {
   const orderData = req.body;
@@ -188,6 +228,9 @@ app.post('/orders', (req, res) => {
     voucherCode: orderData.voucherCode || 'NONE',
     status: needsPaymentConfirmation ? 'awaiting_payment' : 'pending'
   };
+
+  // Decrease product stock
+  decreaseStock(newOrder.items);
 
   orders.unshift(newOrder);
 
@@ -283,15 +326,29 @@ app.post('/webhook/payment', (req, res) => {
 // PUT /orders/:id - Update order status (mark completed)
 app.put('/orders/:id', (req, res) => {
   const orderId = req.params.id;
-  const { status } = req.body;
+  const { status, customer } = req.body;
   
   const orderIndex = orders.findIndex(o => o.id === orderId);
   if (orderIndex === -1) {
     return res.status(404).json({ error: 'Order not found' });
   }
-  
-  const newStatus = status || orders[orderIndex].status;
+
+  const oldStatus = orders[orderIndex].status;
+  const newStatus = status || oldStatus;
+
+  // Restore stock when cancelling
+  if (newStatus === 'cancelled' && oldStatus !== 'cancelled') {
+    restoreStock(orders[orderIndex].items);
+    orders[orderIndex].cancelledAt = new Date().toISOString();
+    console.log(`[Stock] ✅ Stock restored for cancelled order ${orderId}`);
+  }
+
   orders[orderIndex].status = newStatus;
+
+  // Update customer/delivery info if provided
+  if (customer) {
+    orders[orderIndex].customer = { ...orders[orderIndex].customer, ...customer };
+  }
   
   // Track payment confirmation time
   if (newStatus === 'paid' && !orders[orderIndex].paidAt) {
@@ -314,6 +371,13 @@ app.get('/orders/:id', (req, res) => {
     return res.status(404).json({ error: 'Order not found' });
   }
   res.json(order);
+});
+
+// GET /orders/customer/:phone - Get orders by customer phone
+app.get('/orders/customer/:phone', (req, res) => {
+  const phone = req.params.phone;
+  const customerOrders = orders.filter(o => o.customer && o.customer.phone === phone);
+  res.json(customerOrders);
 });
 
 // 6. GET /orders - Get list of placed orders (for admin review)
