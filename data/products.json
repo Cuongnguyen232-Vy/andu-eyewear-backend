@@ -1,0 +1,85 @@
+[
+  {
+    "name": "Kính kk",
+    "categoryId": 1,
+    "subCategory": "Gọng kim loại",
+    "price": 300000,
+    "originalPrice": 349999,
+    "image": "/uploads/product-1781861530759.JPG",
+    "stock": 50,
+    "details": [
+      {
+        "title": "Mô tả sản phẩm",
+        "content": "abcd"
+      }
+    ],
+    "sizes": [
+      "Tiêu chuẩn"
+    ],
+    "colors": [
+      {
+        "name": "Màu đen",
+        "hex": "#000000",
+        "image": "/uploads/product-1781861530759.JPG"
+      },
+      {
+        "name": "Màu xanh",
+        "hex": "#34207e",
+        "image": "/uploads/product-1781861540290.JPG"
+      }
+    ],
+    "id": 1
+  },
+  {
+    "name": "Kính haha",
+    "categoryId": 2,
+    "subCategory": "Kính râm Wayfarer",
+    "price": 25000,
+    "originalPrice": 30000,
+    "image": "/uploads/product-1781874534005.JPG",
+    "stock": 50,
+    "details": [
+      {
+        "title": "Mô tả sản phẩm",
+        "content": "abcdhquhdnkjsd"
+      }
+    ],
+    "sizes": [
+      "Tiêu chuẩn"
+    ],
+    "colors": [
+      {
+        "name": "Màu hồng",
+        "hex": "#8d1667",
+        "image": "/uploads/product-1781874534005.JPG"
+      }
+    ],
+    "id": 2
+  },
+  {
+    "name": "abcd",
+    "categoryId": 2,
+    "subCategory": "Kính râm Mắt mèo",
+    "price": 2000,
+    "originalPrice": 1498,
+    "image": "/uploads/product-1781889198084.jpg",
+    "stock": 50,
+    "details": [
+      {
+        "title": "Mô tả sản phẩm",
+        "content": "test tt"
+      }
+    ],
+    "sizes": [
+      "Tiêu chuẩn"
+    ],
+    "colors": [
+      {
+        "name": "Đen",
+        "hex": "#000000",
+        "image": "/uploads/product-1781889198084.jpg"
+      }
+    ],
+    "id": 3
+  }
+]

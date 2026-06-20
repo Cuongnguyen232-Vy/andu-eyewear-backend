@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZaUI Eyewear - Trang Quản Trị Hệ Thống</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-color: #1e293b;
+            --border-color: #334155;
+            --text-color: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-color: #10b981;
+            --danger-color: #ef4444;
+            --success-color: #22c55e;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --font-family: 'Inter', system-ui, sans-serif;
+            --font-family-display: 'Outfit', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header styling */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+
+        h1 {
+            font-family: var(--font-family-display);
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 16px;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 10px 20px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn.active, .tab-btn:hover {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        /* Content panels */
+        .panel {
+            display: none;
+        }
+
+        .panel.active {
+            display: block;
+        }
+
+        /* Layout grids */
+        .management-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 32px;
+        }
+
+        .card {
+            background-color: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .card-title {
+            font-family: var(--font-family-display);
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+        }
+
+        /* Form styling */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .form-control {
+            width: 100%;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 10px 14px;
+            color: var(--text-color);
+            font-size: 13.5px;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent-color);
+        }
+
+        textarea.form-control {
+            height: 100px;
+            resize: none;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .btn-submit {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover {
+            background-color: #2563eb;
+        }
+
+        /* Table styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 13.5px;
+        }
+
+        th {
+            background-color: var(--bg-color);
+            color: var(--text-muted);
+            font-weight: 600;
+            padding: 14px 16px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        tr:hover td {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        .prod-img {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-sm);
+            object-fit: cover;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            font-size: 11px;
+            font-weight: 700;
+            border-radius: var(--radius-sm);
+        }
+
+        .badge-pending {
+            background-color: rgba(239, 68, 68, 0.15);
+            color: var(--danger-color);
+        }
+
+        .badge-completed {
+            background-color: rgba(34, 197, 94, 0.15);
+            color: var(--success-color);
+        }
+
+        .btn-action {
+            padding: 6px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 12.5px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid transparent;
+            background-color: transparent;
+            color: var(--text-color);
+        }
+
+        .btn-delete {
+            border-color: var(--danger-color);
+            color: var(--danger-color);
+        }
+
+        .btn-delete:hover {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .btn-complete {
+            border-color: var(--success-color);
+            color: var(--success-color);
+        }
+
+        .btn-complete:hover {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        /* Responsive design for tablets and mobile devices */
+        @media (max-width: 900px) {
+            body {
+                padding: 20px 12px;
+            }
+
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+                margin-bottom: 24px;
+                padding-bottom: 16px;
+            }
+
+            .nav-tabs {
+                width: 100%;
+            }
+
+            .tab-btn {
+                flex: 1;
+                justify-content: center;
+                padding: 8px 12px;
+                font-size: 13px;
+            }
+
+            .management-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .card {
+                padding: 16px;
+                margin-bottom: 16px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+        }
+
+        /* Stats Grid styling */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 12px !important;
+            }
+        }
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <header>
+            <div>
+                <h1>Hệ Thống Quản Trị Andu Eyewear</h1>
+                <p>Quản lý danh mục kính mắt và đơn đặt hàng từ Zalo Mini App</p>
+            </div>
+            <div class="nav-tabs">
+                <button class="tab-btn active" onclick="switchTab('products')">
+                    <i data-lucide="package"></i> Sản phẩm
+                </button>
+                <button class="tab-btn" onclick="switchTab('orders')">
+                    <i data-lucide="shopping-cart"></i> Đơn hàng
+                </button>
+                <button class="tab-btn" onclick="switchTab('warranty')">
+                    <i data-lucide="shield-check"></i> Bảo hành & ZNS
+                </button>
+            </div>
+        </header>
+
+        <!-- TOP ANALYTICAL CARDS -->
+        <div class="stats-grid">
+            <div class="card" style="padding: 20px; display: flex; align-items: center; gap: 15px; margin-bottom: 0;">
+                <div style="width: 48px; height: 48px; border-radius: 12px; background-color: rgba(16, 185, 129, 0.15); display: flex; align-items: center; justify-content: center; color: var(--accent-color);">
+                    <i data-lucide="dollar-sign" style="width: 24px; height: 24px;"></i>
+                </div>
+                <div>
+                    <p style="font-size: 12px; color: var(--text-muted); font-weight: 500;">Doanh Thu</p>
+                    <h3 id="stat-revenue" style="font-family: var(--font-family-display); font-size: 20px; font-weight: 700; margin-top: 4px;">0đ</h3>
+                </div>
+            </div>
+            <div class="card" style="padding: 20px; display: flex; align-items: center; gap: 15px; margin-bottom: 0;">
+                <div style="width: 48px; height: 48px; border-radius: 12px; background-color: rgba(59, 130, 246, 0.15); display: flex; align-items: center; justify-content: center; color: #3b82f6;">
+                    <i data-lucide="shopping-bag" style="width: 24px; height: 24px;"></i>
+                </div>
+                <div>
+                    <p style="font-size: 12px; color: var(--text-muted); font-weight: 500;">Tổng Đơn Hàng</p>
+                    <h3 id="stat-orders-count" style="font-family: var(--font-family-display); font-size: 20px; font-weight: 700; margin-top: 4px;">0</h3>
+                </div>
+            </div>
+            <div class="card" style="padding: 20px; display: flex; align-items: center; gap: 15px; margin-bottom: 0;">
+                <div style="width: 48px; height: 48px; border-radius: 12px; background-color: rgba(245, 158, 11, 0.15); display: flex; align-items: center; justify-content: center; color: #f59e0b;">
+                    <i data-lucide="clock" style="width: 24px; height: 24px;"></i>
+                </div>
+                <div>
+                    <p style="font-size: 12px; color: var(--text-muted); font-weight: 500;">Chờ Xử Lý</p>
+                    <h3 id="stat-orders-pending" style="font-family: var(--font-family-display); font-size: 20px; font-weight: 700; margin-top: 4px;">0</h3>
+                </div>
+            </div>
+            <div class="card" style="padding: 20px; display: flex; align-items: center; gap: 15px; margin-bottom: 0;">
+                <div style="width: 48px; height: 48px; border-radius: 12px; background-color: rgba(34, 197, 94, 0.15); display: flex; align-items: center; justify-content: center; color: #22c55e;">
+                    <i data-lucide="check-circle" style="width: 24px; height: 24px;"></i>
+                </div>
+                <div>
+                    <p style="font-size: 12px; color: var(--text-muted); font-weight: 500;">Đã Hoàn Thành</p>
+                    <h3 id="stat-orders-completed" style="font-family: var(--font-family-display); font-size: 20px; font-weight: 700; margin-top: 4px;">0</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- 1. PRODUCTS MANAGEMENT PANEL -->
+        <main id="panel-products" class="panel active">
+            <div class="management-grid">
+                
+                <!-- Add Product Card -->
+                <div class="card">
+                    <h3 class="card-title"><i data-lucide="plus-circle"></i> Thêm kính mắt mới</h3>
+                    <form id="add-product-form" onsubmit="submitNewProduct(event)">
+                        
+                        <div class="form-group">
+                            <label>Tên sản phẩm kính mắt</label>
+                            <input type="text" id="prod-name" required class="form-control" placeholder="Kính Mát Phi Công X">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Danh mục phân loại</label>
+                            <select id="prod-category" required class="form-control" onchange="updateSubCategory()">
+                                <option value="1">Gọng kính</option>
+                                <option value="2">Kính râm</option>
+                                <option value="3">Tròng kính</option>
+                                <option value="4">Phụ kiện</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" id="sub-category-group">
+                            <label>Phân loại chi tiết</label>
+                            <select id="prod-sub-category" required class="form-control">
+                            </select>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Giá bán (VND)</label>
+                                <input type="number" id="prod-price" required class="form-control" placeholder="250000">
+                            </div>
+                            <div class="form-group">
+                                <label>Giá gốc niêm yết</label>
+                                <input type="number" id="prod-original-price" class="form-control" placeholder="350000">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Số lượng tồn kho</label>
+                            <input type="number" id="prod-stock" required class="form-control" placeholder="50" min="0" value="50">
+                        </div>
+
+                        <!-- Color Variants Section -->
+                        <div class="form-group">
+                            <label style="display:flex; align-items:center; justify-content:space-between;">
+                                Màu sắc & Hình ảnh
+                                <button type="button" onclick="addColorVariant()" style="background:#16a34a; color:#fff; border:none; border-radius:8px; padding:5px 12px; font-size:12px; cursor:pointer; font-weight:600;">
+                                    + Thêm màu
+                                </button>
+                            </label>
+                            <div id="color-variants-container">
+                                <!-- Color variant items will be added here -->
+                            </div>
+                            <p style="font-size: 11px; color: #888; margin-top: 6px;">Mỗi màu sẽ có ảnh sản phẩm riêng. Ảnh màu đầu tiên sẽ là ảnh chính.</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Mô tả chi tiết kính mắt</label>
+                            <textarea id="prod-desc" required class="form-control" placeholder="Kính râm gọng hợp kim phân cực, tròng UV400..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn-submit">Thêm vào kho hàng</button>
+
+                    </form>
+                </div>
+
+                <!-- Products List Card -->
+                <div class="card">
+                    <h3 class="card-title"><i data-lucide="list"></i> Danh sách kính mắt đang bán</h3>
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Ảnh</th>
+                                    <th>Tên Kính Mắt</th>
+                                    <th>Danh mục</th>
+                                    <th>Giá bán</th>
+                                    <th style="text-align:center;">Tồn kho</th>
+                                    <th style="text-align: right;">Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody id="products-table-body">
+                                <!-- Dynamic products lists -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <!-- 2. ORDERS MANAGEMENT PANEL -->
+        <main id="panel-orders" class="panel">
+            <div class="card">
+                <h3 class="card-title"><i data-lucide="clipboard-list"></i> Đơn hàng từ khách hàng</h3>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Mã đơn</th>
+                                <th>Thời gian</th>
+                                <th>Khách hàng</th>
+                                <th>Sản phẩm đặt mua</th>
+                                <th>Khuyến mãi</th>
+                                <th>Tổng tiền</th>
+                                <th>Thanh toán</th>
+                                <th>Trạng thái</th>
+                                <th style="text-align: right;">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orders-table-body">
+                            <!-- Dynamic orders list -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+        <!-- 3. WARRANTY & ZNS MANAGEMENT PANEL -->
+        <main id="panel-warranty" class="panel">
+            <div class="card">
+                <h3 class="card-title"><i data-lucide="shield"></i> Nhật ký Kích hoạt Bảo hành & Gửi tin ZNS</h3>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Mã kích hoạt</th>
+                                <th>Thời gian</th>
+                                <th>Khách hàng</th>
+                                <th>Số điện thoại</th>
+                                <th>Quà tặng</th>
+                                <th>Trạng thái ZNS</th>
+                                <th>Nội dung tin nhắn ZNS đã gửi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="warranty-table-body">
+                            <!-- Dynamic warranty logs -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:5005';
+
+        // Load content on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            fetchProducts();
+            fetchOrders();
+            fetchWarranties();
+            lucide.createIcons();
+            
+            // Auto-refresh orders and warranties every 3 seconds to avoid manual reloads
+            setInterval(fetchOrders, 3000);
+            setInterval(fetchWarranties, 3000);
+        });
+
+        // Tab Switcher
+        function switchTab(tabId) {
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(`panel-${tabId}`).classList.add('active');
+            event.currentTarget.classList.add('active');
+            
+            if (tabId === 'warranty') {
+                fetchWarranties();
+            }
+        }
+
+        // Fetch activated warranties & ZNS logs
+        async function fetchWarranties() {
+            try {
+                const response = await fetch(`${API_BASE}/warranty`);
+                const warranties = await response.json();
+
+                const tableBody = document.getElementById('warranty-table-body');
+                if (!tableBody) return;
+                tableBody.innerHTML = '';
+
+                if (warranties.length === 0) {
+                    tableBody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 30px; color: var(--text-muted);">Chưa có lượt kích hoạt bảo hành nào.</td></tr>`;
+                    return;
+                }
+
+                warranties.forEach(w => {
+                    const tr = document.createElement('tr');
+                    
+                    tr.innerHTML = `
+                        <td><strong>${w.id}</strong></td>
+                        <td>${formatDate(w.date)}</td>
+                        <td><strong>${w.name}</strong></td>
+                        <td><span style="font-family: monospace; font-size: 13px; font-weight: 600;">${w.phone}</span></td>
+                        <td><span class="badge" style="background-color: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2); font-weight: 600;">Voucher 30k</span></td>
+                        <td><span class="badge badge-completed"><i data-lucide="check" style="width: 12px; height: 12px; display: inline-block; vertical-align: middle; margin-right: 2px;"></i> Thành công</span></td>
+                        <td style="font-size: 11.5px; color: var(--text-muted); max-width: 320px; white-space: normal; line-height: 1.4;">${w.znsMessage}</td>
+                    `;
+                    tableBody.appendChild(tr);
+                });
+
+                lucide.createIcons();
+            } catch (err) {
+                console.error('Error loading warranties:', err);
+            }
+        }
+
+        // Fetch products catalog
+        async function fetchProducts() {
+            try {
+                const response = await fetch(`${API_BASE}/products`);
+                const products = await response.json();
+                
+                const tableBody = document.getElementById('products-table-body');
+                tableBody.innerHTML = '';
+
+                const categoriesMap = {
+                    1: 'Gọng kính',
+                    2: 'Kính râm',
+                    3: 'Tròng kính',
+                    4: 'Phụ kiện'
+                };
+
+                products.forEach(p => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><img src="${p.image}" class="prod-img" alt=""></td>
+                        <td>
+                            <strong>${p.name}</strong>
+                            ${p.subCategory ? `<br><span style="font-size:11px; color:#888;">${p.subCategory}</span>` : ''}
+                        </td>
+                        <td><span class="badge" style="background-color:#334155;">${categoriesMap[p.categoryId] || 'Khác'}</span></td>
+                        <td><span style="color:#22c55e; font-weight:700;">${formatCurrency(p.price)}</span></td>
+                        <td style="text-align:center;">${p.stock != null ? p.stock : '—'}</td>
+                        <td style="text-align: right; white-space:nowrap;">
+                            <button class="btn-action btn-complete" onclick='editProduct(${JSON.stringify(p.id)})' style="margin-right:4px;">
+                                <i data-lucide="pencil" style="width:13px; height:13px; vertical-align:middle;"></i> Sửa
+                            </button>
+                            <button class="btn-action btn-delete" onclick='deleteProduct(${JSON.stringify(p.id)})'>
+                                <i data-lucide="trash-2" style="width:13px; height:13px; vertical-align:middle;"></i> Xóa
+                            </button>
+                        </td>
+                    `;
+                    tableBody.appendChild(tr);
+                });
+
+                lucide.createIcons();
+            } catch (err) {
+                console.error('Error loading products:', err);
+            }
+        }
+
+        // Fetch placed orders
+        async function fetchOrders() {
+            try {
+                const response = await fetch(`${API_BASE}/orders`);
+                const orders = await response.json();
+
+                const tableBody = document.getElementById('orders-table-body');
+                tableBody.innerHTML = '';
+
+                // Calculate metrics
+                let totalRevenue = 0;
+                let pendingOrders = 0;
+                let completedOrders = 0;
+
+                orders.forEach(o => {
+                    if (o.status === 'completed' || o.status === 'paid') {
+                        totalRevenue += o.total;
+                        completedOrders++;
+                    } else {
+                        pendingOrders++;
+                    }
+                });
+
+                document.getElementById('stat-revenue').textContent = formatCurrency(totalRevenue);
+                document.getElementById('stat-orders-count').textContent = orders.length;
+                document.getElementById('stat-orders-pending').textContent = pendingOrders;
+                document.getElementById('stat-orders-completed').textContent = completedOrders;
+
+                if (orders.length === 0) {
+                    tableBody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding: 30px; color: var(--text-muted);">Chưa có đơn hàng nào được đặt.</td></tr>`;
+                    return;
+                }
+
+                orders.forEach(o => {
+                    const tr = document.createElement('tr');
+                    
+                    // Format items list
+                    const itemsSummary = o.items.map(i => `${i.product.name} (SL:${i.quantity}, Size:${i.size || 'M'})`).join('<br>');
+                    
+                    
+                    // Format voucher & discount
+                    const voucherCode = o.voucherCode || 'NONE';
+                    const discount = o.discount || 0;
+                    const voucherDisplay = discount > 0 
+                        ? `<span class="badge" style="background-color: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2); font-weight:600;">${voucherCode}</span><br><span style="font-size:11px; color:#22c55e;">-${formatCurrency(discount)}</span>`
+                        : `<span style="color:var(--text-muted); font-size:11.5px;">Không</span>`;
+                    
+                    tr.innerHTML = `
+                        <td><strong>${o.id}</strong></td>
+                        <td>${formatDate(o.date)}</td>
+                        <td>
+                            <strong>${o.customer.name}</strong><br>
+                            <span style="font-size:11.5px; color:var(--text-muted);">${o.customer.phone}</span><br>
+                            <span style="font-size:11px; color:var(--text-muted);">${o.customer.address}</span>
+                        </td>
+                        <td style="font-size:12.5px; line-height:1.4;">${itemsSummary}</td>
+                        <td>${voucherDisplay}</td>
+                        <td><strong style="color:#ff3f6c;">${formatCurrency(o.total)}</strong></td>
+                        <td><span class="badge" style="background-color:#0f5c36; color:#ffffff;">${o.paymentMethod.toUpperCase()}</span></td>
+                        <td>
+                            <span class="badge ${getStatusBadgeClass(o.status)}">
+                                ${getStatusLabel(o.status)}
+                            </span>
+                        </td>
+                        <td style="text-align: right;">
+                            ${o.status === 'awaiting_payment' ? `
+                                <button class="btn-action btn-complete" style="border-color:#f59e0b; color:#f59e0b;" onclick="confirmPayment('${o.id}')">
+                                    <i data-lucide="banknote" style="width:14px; height:14px; vertical-align:middle;"></i> Xác nhận TT
+                                </button>
+                            ` : o.status === 'paid' || o.status === 'pending' ? `
+                                <button class="btn-action btn-complete" style="border-color:#3b82f6; color:#3b82f6;" onclick="markOrderShipping('${o.id}')">
+                                    <i data-lucide="truck" style="width:14px; height:14px; vertical-align:middle;"></i> Giao hàng
+                                </button>
+                            ` : o.status === 'shipping' ? `
+                                <button class="btn-action btn-complete" onclick="markOrderCompleted('${o.id}')">
+                                    <i data-lucide="check" style="width:14px; height:14px; vertical-align:middle;"></i> Hoàn tất
+                                </button>
+                            ` : o.status === 'cancelled' ? '—' : '✓'}
+                        </td>
+                    `;
+                    tableBody.appendChild(tr);
+                });
+
+                lucide.createIcons();
+            } catch (err) {
+                console.error('Error loading orders:', err);
+            }
+        }
+
+        // Add Product Submit
+        // Sub-category options per main category
+        const subCategoryMap = {
+            '1': ['Gọng nhựa', 'Gọng kim loại', 'Gọng nhựa mix kim loại', 'Gọng mắt mèo', 'Gọng dạng vuông', 'Gọng dạng tròn'],
+            '2': ['Kính râm Phi công', 'Kính râm Mắt mèo', 'Kính râm Thể thao', 'Kính râm Wayfarer', 'Kính râm Cổ điển'],
+            '3': ['Chống ánh sáng xanh', 'Tròng kính đổi màu', 'Tròng siêu mỏng', 'Chống bám nước', 'Hạn chế trầy xước'],
+            '4': ['Hộp đựng kính', 'Nước lau kính', 'Khăn lau kính', 'Dây đeo kính']
+        };
+
+        function updateSubCategory() {
+            const catId = document.getElementById('prod-category').value;
+            const subSelect = document.getElementById('prod-sub-category');
+            const options = subCategoryMap[catId] || [];
+            subSelect.innerHTML = options.map(s => `<option value="${s}">${s}</option>`).join('');
+        }
+
+        // Initialize subcategory on load
+        updateSubCategory();
+
+        let colorVariantCount = 0;
+
+        function addColorVariant() {
+            colorVariantCount++;
+            const id = colorVariantCount;
+            const container = document.getElementById('color-variants-container');
+            const div = document.createElement('div');
+            div.id = `color-variant-${id}`;
+            div.style.cssText = 'border:1px solid #e0e0e0; border-radius:12px; padding:12px; margin-bottom:10px; background:#fafafa;';
+            div.innerHTML = `
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                    <input type="text" placeholder="Tên màu (VD: Đen Bóng)" class="form-control color-name" style="flex:1; margin:0; font-size:13px;">
+                    <input type="color" class="color-hex" value="#000000" style="width:40px; height:36px; border:1px solid #ddd; border-radius:8px; cursor:pointer; padding:2px;">
+                    <button type="button" onclick="removeColorVariant(${id})" style="background:#ef4444; color:#fff; border:none; border-radius:8px; width:36px; height:36px; cursor:pointer; font-size:16px; font-weight:bold;">×</button>
+                </div>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <input type="file" accept="image/*" class="color-image-file" onchange="uploadColorImage(this, ${id})" style="font-size:12px; flex:1;">
+                    <input type="hidden" class="color-image-url" value="">
+                </div>
+                <div class="color-preview" style="display:none; margin-top:6px;">
+                    <img class="color-preview-img" src="" style="width:80px; height:80px; object-fit:cover; border-radius:8px; border:1px solid #ddd;">
+                    <span class="color-upload-status" style="font-size:11px; color:#16a34a; margin-left:8px;">✅</span>
+                </div>
+            `;
+            container.appendChild(div);
+        }
+
+        function removeColorVariant(id) {
+            const el = document.getElementById(`color-variant-${id}`);
+            if (el) el.remove();
+        }
+
+        async function uploadColorImage(input, id) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const variant = document.getElementById(`color-variant-${id}`);
+            const preview = variant.querySelector('.color-preview');
+            const previewImg = variant.querySelector('.color-preview-img');
+            const status = variant.querySelector('.color-upload-status');
+            const hiddenUrl = variant.querySelector('.color-image-url');
+
+            preview.style.display = 'flex';
+            preview.style.alignItems = 'center';
+            previewImg.src = URL.createObjectURL(file);
+            status.textContent = '⏳ Đang tải...';
+            status.style.color = '#f59e0b';
+
+            try {
+                const formData = new FormData();
+                formData.append('image', file);
+                const res = await fetch(`${API_BASE}/upload`, { method: 'POST', body: formData });
+                const data = await res.json();
+                if (data.success) {
+                    hiddenUrl.value = data.url;
+                    status.textContent = '✅ OK';
+                    status.style.color = '#16a34a';
+                } else {
+                    status.textContent = '❌ Lỗi';
+                    status.style.color = '#ef4444';
+                }
+            } catch (err) {
+                status.textContent = '❌ Lỗi';
+                status.style.color = '#ef4444';
+            }
+        }
+
+        // Initialize with 1 default color
+        addColorVariant();
+
+        async function submitNewProduct(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('prod-name').value.trim();
+            const categoryId = parseInt(document.getElementById('prod-category').value);
+            const subCategory = document.getElementById('prod-sub-category').value;
+            const price = parseInt(document.getElementById('prod-price').value);
+            const originalPriceInput = document.getElementById('prod-original-price').value;
+            const stock = parseInt(document.getElementById('prod-stock').value) || 0;
+            const desc = document.getElementById('prod-desc').value.trim();
+
+            // Collect color variants
+            const variantEls = document.querySelectorAll('#color-variants-container > div');
+            const colors = [];
+            let mainImage = '';
+
+            for (const el of variantEls) {
+                const colorName = el.querySelector('.color-name').value.trim();
+                const colorHex = el.querySelector('.color-hex').value;
+                const colorImageUrl = el.querySelector('.color-image-url').value;
+
+                if (!colorName) {
+                    showModal('Vui lòng nhập tên cho tất cả màu sắc!', null, false);
+                    return;
+                }
+                if (!colorImageUrl) {
+                    showModal(`Vui lòng chọn ảnh cho màu "${colorName}"!`, null, false);
+                    return;
+                }
+
+                colors.push({ name: colorName, hex: colorHex, image: colorImageUrl });
+                if (!mainImage) mainImage = colorImageUrl; // First color image = main image
+            }
+
+            if (colors.length === 0) {
+                showModal('Vui lòng thêm ít nhất 1 màu sắc!', null, false);
+                return;
+            }
+
+            const newProduct = {
+                name,
+                categoryId,
+                subCategory,
+                price,
+                originalPrice: originalPriceInput ? parseInt(originalPriceInput) : null,
+                image: mainImage,
+                stock,
+                details: [
+                    { title: "Mô tả sản phẩm", content: desc }
+                ],
+                sizes: ["Tiêu chuẩn"],
+                colors
+            };
+
+            try {
+                const res = await fetch(`${API_BASE}/products`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newProduct)
+                });
+                
+                if (res.ok) {
+                    showModal('✅ Đã thêm sản phẩm thành công!', null, false);
+                    document.getElementById('add-product-form').reset();
+                    document.getElementById('color-variants-container').innerHTML = '';
+                    colorVariantCount = 0;
+                    addColorVariant();
+                    fetchProducts();
+                } else {
+                    showModal('❌ Lỗi khi thêm sản phẩm.', null, false);
+                }
+            } catch (err) {
+                console.error('Error adding product:', err);
+            }
+        }
+
+        // Custom confirm/alert modal (replaces native confirm/alert which may be blocked)
+        function showModal(message, onConfirm, showCancel = true) {
+            const existing = document.getElementById('custom-modal');
+            if (existing) existing.remove();
+
+            const modal = document.createElement('div');
+            modal.id = 'custom-modal';
+            modal.style.cssText = 'position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; display:flex; align-items:center; justify-content:center; padding:20px;';
+            modal.innerHTML = `
+                <div style="background:#fff; border-radius:16px; padding:24px; width:100%; max-width:400px; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+                    <p style="font-size:15px; font-weight:600; color:#1e293b; margin:0 0 20px; line-height:1.5;">${message}</p>
+                    <div style="display:flex; gap:10px; justify-content:center;">
+                        ${showCancel ? `<button id="modal-cancel" style="flex:1; padding:10px 20px; background:#e5e7eb; color:#333; border:none; border-radius:10px; font-weight:700; cursor:pointer; font-size:14px;">Hủy</button>` : ''}
+                        <button id="modal-ok" style="flex:1; padding:10px 20px; background:${showCancel ? '#ef4444' : '#16a34a'}; color:#fff; border:none; border-radius:10px; font-weight:700; cursor:pointer; font-size:14px;">${showCancel ? 'Xác nhận' : 'OK'}</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            document.getElementById('modal-ok').addEventListener('click', () => {
+                modal.remove();
+                if (onConfirm) onConfirm();
+            });
+            if (showCancel) {
+                document.getElementById('modal-cancel').addEventListener('click', () => modal.remove());
+                modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+            }
+        }
+
+        // Delete Product
+        async function deleteProduct(productId) {
+            showModal('Bạn có chắc chắn muốn xóa kính mắt này?', async () => {
+                try {
+                    const res = await fetch(`${API_BASE}/products/${productId}`, {
+                        method: 'DELETE'
+                    });
+                    
+                    if (res.ok) {
+                        showModal('✅ Xóa sản phẩm thành công!', null, false);
+                        fetchProducts();
+                    } else {
+                        showModal('❌ Lỗi khi xóa sản phẩm.', null, false);
+                    }
+                } catch (err) {
+                    console.error('Error deleting product:', err);
+                    showModal('❌ Lỗi kết nối server.', null, false);
+                }
+            });
+        }
+
+        // Edit Product - show modal with current values
+        async function editProduct(productId) {
+            try {
+                const res = await fetch(`${API_BASE}/products`);
+                const products = await res.json();
+                const product = products.find(p => p.id == productId);
+                if (!product) { showModal('Không tìm thấy sản phẩm!', null, false); return; }
+
+                // Build edit modal
+                const modal = document.createElement('div');
+                modal.id = 'edit-modal';
+                modal.style.cssText = 'position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:1000; display:flex; align-items:center; justify-content:center; padding:20px;';
+                modal.innerHTML = `
+                    <div style="background:#fff; border-radius:16px; padding:24px; width:100%; max-width:500px; max-height:90vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+                        <h3 style="margin:0 0 16px; font-family:'Outfit',sans-serif; font-size:18px;">✏️ Sửa sản phẩm</h3>
+                        <div style="display:flex; flex-direction:column; gap:12px;">
+                            <div>
+                                <label style="font-size:12px; font-weight:600; display:block; margin-bottom:4px;">Tên sản phẩm</label>
+                                <input type="text" id="edit-name" value="${product.name}" class="form-control" style="margin:0;">
+                            </div>
+                            <div style="display:flex; gap:10px;">
+                                <div style="flex:1;">
+                                    <label style="font-size:12px; font-weight:600; display:block; margin-bottom:4px;">Giá bán</label>
+                                    <input type="number" id="edit-price" value="${product.price}" class="form-control" style="margin:0;">
+                                </div>
+                                <div style="flex:1;">
+                                    <label style="font-size:12px; font-weight:600; display:block; margin-bottom:4px;">Giá gốc</label>
+                                    <input type="number" id="edit-original-price" value="${product.originalPrice || ''}" class="form-control" style="margin:0;">
+                                </div>
+                            </div>
+                            <div>
+                                <label style="font-size:12px; font-weight:600; display:block; margin-bottom:4px;">Số lượng tồn kho</label>
+                                <input type="number" id="edit-stock" value="${product.stock || 0}" class="form-control" style="margin:0;" min="0">
+                            </div>
+                            <div>
+                                <label style="font-size:12px; font-weight:600; display:block; margin-bottom:4px;">Danh mục</label>
+                                <select id="edit-category" class="form-control" style="margin:0;">
+                                    <option value="1" ${product.categoryId==1?'selected':''}>Gọng kính</option>
+                                    <option value="2" ${product.categoryId==2?'selected':''}>Kính râm</option>
+                                    <option value="3" ${product.categoryId==3?'selected':''}>Tròng kính</option>
+                                    <option value="4" ${product.categoryId==4?'selected':''}>Phụ kiện</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="font-size:12px; font-weight:600; display:block; margin-bottom:4px;">Phân loại chi tiết</label>
+                                <input type="text" id="edit-sub-category" value="${product.subCategory || ''}" class="form-control" style="margin:0;" placeholder="VD: Gọng nhựa">
+                            </div>
+                            <div>
+                                <label style="font-size:12px; font-weight:600; display:block; margin-bottom:4px;">Đổi ảnh chính (tùy chọn)</label>
+                                <input type="file" id="edit-image-file" accept="image/*" class="form-control" style="margin:0; padding:6px;">
+                                <img src="${product.image}" id="edit-preview" style="width:80px; height:80px; object-fit:cover; border-radius:8px; margin-top:6px; border:1px solid #ddd;">
+                                <input type="hidden" id="edit-image-url" value="">
+                            </div>
+                            <div style="display:flex; gap:10px; margin-top:8px;">
+                                <button onclick="submitEditProduct(${productId})" style="flex:1; padding:10px; background:#16a34a; color:#fff; border:none; border-radius:10px; font-weight:700; cursor:pointer; font-size:14px;">💾 Lưu thay đổi</button>
+                                <button onclick="document.getElementById('edit-modal').remove()" style="flex:1; padding:10px; background:#e5e7eb; color:#333; border:none; border-radius:10px; font-weight:700; cursor:pointer; font-size:14px;">Hủy</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+
+                // Handle image upload in edit modal
+                document.getElementById('edit-image-file').addEventListener('change', async function(e) {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    document.getElementById('edit-preview').src = URL.createObjectURL(file);
+                    const formData = new FormData();
+                    formData.append('image', file);
+                    try {
+                        const uploadRes = await fetch(`${API_BASE}/upload`, { method: 'POST', body: formData });
+                        const data = await uploadRes.json();
+                        if (data.success) document.getElementById('edit-image-url').value = data.url;
+                    } catch (err) { console.error('Upload error:', err); }
+                });
+
+                // Close modal on backdrop click
+                modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+
+            } catch (err) {
+                console.error('Error loading product for edit:', err);
+            }
+        }
+
+        async function submitEditProduct(productId) {
+            const updates = {
+                name: document.getElementById('edit-name').value.trim(),
+                price: parseInt(document.getElementById('edit-price').value),
+                originalPrice: document.getElementById('edit-original-price').value ? parseInt(document.getElementById('edit-original-price').value) : null,
+                stock: parseInt(document.getElementById('edit-stock').value) || 0,
+                categoryId: parseInt(document.getElementById('edit-category').value),
+                subCategory: document.getElementById('edit-sub-category').value.trim()
+            };
+
+            const newImage = document.getElementById('edit-image-url').value;
+            if (newImage) updates.image = newImage;
+
+            try {
+                const res = await fetch(`${API_BASE}/products/${productId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updates)
+                });
+                if (res.ok) {
+                    showModal('✅ Cập nhật sản phẩm thành công!', null, false);
+                    document.getElementById('edit-modal').remove();
+                    fetchProducts();
+                } else {
+                    showModal('❌ Lỗi cập nhật sản phẩm.', null, false);
+                }
+            } catch (err) {
+                console.error('Error updating product:', err);
+            }
+        }
+
+        // Mark Order as Shipping
+        async function markOrderShipping(orderId) {
+            showModal('Xác nhận đã gửi hàng cho đơn này?', async () => {
+                try {
+                    const res = await fetch(`${API_BASE}/orders/${orderId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ status: 'shipping' })
+                    });
+                    if (res.ok) {
+                        showModal('🚚 Đã chuyển sang trạng thái giao hàng!', null, false);
+                        fetchOrders();
+                    } else {
+                        showModal('❌ Lỗi cập nhật đơn hàng.', null, false);
+                    }
+                } catch (err) {
+                    console.error('Error updating order:', err);
+                }
+            });
+        }
+
+        // Mark Order as Completed
+        async function markOrderCompleted(orderId) {
+            showModal('Xác nhận đơn hàng đã giao thành công?', async () => {
+                try {
+                    const res = await fetch(`${API_BASE}/orders/${orderId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ status: 'completed' })
+                    });
+                    if (res.ok) {
+                        showModal('✅ Đã hoàn tất đơn hàng!', null, false);
+                        fetchOrders();
+                    } else {
+                        showModal('❌ Lỗi cập nhật đơn hàng.', null, false);
+                    }
+                } catch (err) {
+                    console.error('Error updating order:', err);
+                }
+            });
+        }
+
+        // Confirm Bank Payment Received
+        async function confirmPayment(orderId) {
+            showModal('Xác nhận đã nhận được tiền chuyển khoản cho đơn hàng này?', async () => {
+                try {
+                    const res = await fetch(`${API_BASE}/orders/${orderId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ status: 'paid' })
+                    });
+                    if (res.ok) {
+                        showModal('✅ Đã xác nhận thanh toán! Khách hàng sẽ nhận được thông báo.', null, false);
+                        fetchOrders();
+                    } else {
+                        showModal('❌ Lỗi xác nhận thanh toán.', null, false);
+                    }
+                } catch (err) {
+                    console.error('Error confirming payment:', err);
+                }
+            });
+        }
+
+        // Helper helpers
+        function formatCurrency(val) {
+            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(val).replace("₫", "đ");
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')} ${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
+        }
+
+        function getStatusBadgeClass(status) {
+            switch (status) {
+                case 'awaiting_payment': return 'badge-pending';
+                case 'paid': return 'badge-completed';
+                case 'shipping': return 'badge-pending';
+                case 'completed': return 'badge-completed';
+                case 'cancelled': return 'badge-pending';
+                default: return 'badge-pending';
+            }
+        }
+
+        function getStatusLabel(status) {
+            switch (status) {
+                case 'awaiting_payment': return '⏳ Chờ thanh toán';
+                case 'paid': return '💰 Đã thanh toán';
+                case 'pending': return '🔄 Chờ xử lý';
+                case 'shipping': return '🚚 Đang giao hàng';
+                case 'completed': return '✅ Đã giao thành công';
+                case 'cancelled': return '❌ Đã hủy';
+                default: return '🔄 Đang xử lý';
+            }
+        }
+    </script>
+
+</body>
+</html>

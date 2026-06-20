@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "name": "Gọng kính",
+    "image": "https://images.unsplash.com/photo-1591076482161-42ce6da69f67?w=200&h=200&fit=crop"
+  },
+  {
+    "id": 2,
+    "name": "Kính râm",
+    "image": "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=200&h=200&fit=crop"
+  },
+  {
+    "id": 3,
+    "name": "Tròng kính",
+    "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=200&h=200&fit=crop"
+  },
+  {
+    "id": 4,
+    "name": "Phụ kiện",
+    "image": "https://images.unsplash.com/photo-1511556532299-8f662fc26c06?w=200&h=200&fit=crop"
+  }
+]

@@ -1,0 +1,20 @@
+[
+  {
+    "id": "WR-1781834766931",
+    "date": "2026-06-19T02:06:06.931Z",
+    "name": "Nguyen Van Test",
+    "phone": "0909999888",
+    "rewardAmount": 30000,
+    "znsStatus": "sent",
+    "znsMessage": "Cảm ơn Nguyen Van Test đã mua sản phẩm kính mắt tại Andu Eyewear. Chế độ bảo hành 12 tháng đã được kích hoạt thành công cho số điện thoại 0909999888. Voucher 30.000đ đã được cộng vào ví của bạn."
+  },
+  {
+    "id": "WR-1780929389004",
+    "date": "2026-06-08T14:36:29.005Z",
+    "name": "Lê Minh Anh",
+    "phone": "0987654321",
+    "rewardAmount": 30000,
+    "znsStatus": "sent",
+    "znsMessage": "Cảm ơn Lê Minh Anh đã mua sản phẩm kính mắt tại ZaUI Eyewear. Chế độ bảo hành 12 tháng đã được kích hoạt thành công cho số điện thoại 0987654321. Voucher 30.000đ đã được cộng vào ví của bạn."
+  }
+]

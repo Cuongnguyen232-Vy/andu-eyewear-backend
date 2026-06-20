@@ -1,0 +1,30 @@
+{
+  "1": [
+    { "name": "Gọng nhựa", "image": "https://images.unsplash.com/photo-1591076482161-42ce6da69f67?w=200&h=200&fit=crop" },
+    { "name": "Gọng kim loại", "image": "https://images.unsplash.com/photo-1574258495973-f010dfbb5371?w=200&h=200&fit=crop" },
+    { "name": "Gọng nhựa mix kim loại", "image": "https://images.unsplash.com/photo-1577803645773-f96470509666?w=200&h=200&fit=crop" },
+    { "name": "Gọng mắt mèo", "image": "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=200&h=200&fit=crop" },
+    { "name": "Gọng dạng vuông", "image": "https://images.unsplash.com/photo-1574258495973-f010dfbb5371?w=200&h=200&fit=crop" },
+    { "name": "Gọng dạng tròn", "image": "https://images.unsplash.com/photo-1509281373149-e957c6296406?w=200&h=200&fit=crop" }
+  ],
+  "2": [
+    { "name": "Kính râm Phi công", "image": "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=200&h=200&fit=crop" },
+    { "name": "Kính râm Mắt mèo", "image": "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=200&h=200&fit=crop" },
+    { "name": "Kính râm Thể thao", "image": "https://images.unsplash.com/photo-1556306535-0f09a537f0a3?w=200&h=200&fit=crop" },
+    { "name": "Kính râm Wayfarer", "image": "https://images.unsplash.com/photo-1577803645773-f96470509666?w=200&h=200&fit=crop" },
+    { "name": "Kính râm Cổ điển", "image": "https://images.unsplash.com/photo-1574258495973-f010dfbb5371?w=200&h=200&fit=crop" }
+  ],
+  "3": [
+    { "name": "Chống ánh sáng xanh", "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=200&h=200&fit=crop" },
+    { "name": "Tròng kính đổi màu", "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=200&h=200&fit=crop" },
+    { "name": "Tròng siêu mỏng", "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=200&h=200&fit=crop" },
+    { "name": "Chống bám nước", "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=200&h=200&fit=crop" },
+    { "name": "Hạn chế trầy xước", "image": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=200&h=200&fit=crop" }
+  ],
+  "4": [
+    { "name": "Hộp đựng kính", "image": "https://images.unsplash.com/photo-1511556532299-8f662fc26c06?w=200&h=200&fit=crop" },
+    { "name": "Nước lau kính", "image": "https://images.unsplash.com/photo-1511556532299-8f662fc26c06?w=200&h=200&fit=crop" },
+    { "name": "Khăn lau kính", "image": "https://images.unsplash.com/photo-1511556532299-8f662fc26c06?w=200&h=200&fit=crop" },
+    { "name": "Dây đeo kính", "image": "https://images.unsplash.com/photo-1511556532299-8f662fc26c06?w=200&h=200&fit=crop" }
+  ]
+}

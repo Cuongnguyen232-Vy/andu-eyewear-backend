@@ -1,0 +1,467 @@
+[
+  {
+    "id": "ORD-1781919009159",
+    "date": "2026-06-20T01:30:09.159Z",
+    "customer": {
+      "name": "cuong",
+      "phone": "0365250826",
+      "address": "ancd"
+    },
+    "items": [
+      {
+        "id": 1,
+        "product": {
+          "name": "abcd",
+          "categoryId": 2,
+          "subCategory": "Kính râm Mắt mèo",
+          "price": 2000,
+          "originalPrice": 1498,
+          "image": "/uploads/product-1781889198084.jpg",
+          "stock": 50,
+          "details": [
+            {
+              "title": "Mô tả sản phẩm",
+              "content": "test tt"
+            }
+          ],
+          "sizes": [
+            "Tiêu chuẩn"
+          ],
+          "colors": [
+            {
+              "name": "Đen",
+              "hex": "#000000",
+              "image": "/uploads/product-1781889198084.jpg"
+            }
+          ],
+          "id": 3,
+          "category": {
+            "id": 2,
+            "name": "Kính râm",
+            "image": "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=200&h=200&fit=crop"
+          }
+        },
+        "options": {
+          "size": "Tiêu chuẩn",
+          "color": "Đen"
+        },
+        "quantity": 1
+      }
+    ],
+    "shippingFee": 30000,
+    "paymentMethod": "BANK",
+    "total": 2000,
+    "discount": 0,
+    "voucherCode": "NONE",
+    "status": "paid",
+    "paidAt": "2026-06-20T01:32:01.694Z",
+    "paymentGateway": "MBBank"
+  },
+  {
+    "id": "ORD-1781918839013",
+    "date": "2026-06-20T01:27:19.013Z",
+    "customer": {
+      "name": "cuong",
+      "phone": "0365250826",
+      "address": "ancd"
+    },
+    "items": [
+      {
+        "id": 1,
+        "product": {
+          "name": "abcd",
+          "categoryId": 2,
+          "subCategory": "Kính râm Mắt mèo",
+          "price": 2000,
+          "originalPrice": 1498,
+          "image": "/uploads/product-1781889198084.jpg",
+          "stock": 50,
+          "details": [
+            {
+              "title": "Mô tả sản phẩm",
+              "content": "test tt"
+            }
+          ],
+          "sizes": [
+            "Tiêu chuẩn"
+          ],
+          "colors": [
+            {
+              "name": "Đen",
+              "hex": "#000000",
+              "image": "/uploads/product-1781889198084.jpg"
+            }
+          ],
+          "id": 3,
+          "category": {
+            "id": 2,
+            "name": "Kính râm",
+            "image": "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=200&h=200&fit=crop"
+          }
+        },
+        "options": {
+          "size": "Tiêu chuẩn",
+          "color": "Đen"
+        },
+        "quantity": 1
+      }
+    ],
+    "shippingFee": 30000,
+    "paymentMethod": "BANK",
+    "total": 2000,
+    "discount": 0,
+    "voucherCode": "NONE",
+    "status": "paid",
+    "paidAt": "2026-06-20T01:29:29.687Z",
+    "paymentGateway": "MBBank"
+  },
+  {
+    "id": "ORD-1781889659309",
+    "date": "2026-06-19T17:20:59.309Z",
+    "customer": {
+      "name": "cuong",
+      "phone": "0365250826",
+      "address": "ancd"
+    },
+    "items": [
+      {
+        "id": 1,
+        "product": {
+          "name": "abcd",
+          "categoryId": 2,
+          "subCategory": "Kính râm Mắt mèo",
+          "price": 2000,
+          "originalPrice": 1498,
+          "image": "http://localhost:5000/uploads/product-1781889198084.jpg",
+          "stock": 50,
+          "details": [
+            {
+              "title": "Mô tả sản phẩm",
+              "content": "test tt"
+            }
+          ],
+          "sizes": [
+            "Tiêu chuẩn"
+          ],
+          "colors": [
+            {
+              "name": "Đen",
+              "hex": "#000000",
+              "image": "http://localhost:5000/uploads/product-1781889198084.jpg"
+            }
+          ],
+          "id": 3,
+          "category": {
+            "id": 2,
+            "name": "Kính râm",
+            "image": "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=200&h=200&fit=crop"
+          }
+        },
+        "options": {
+          "size": "Tiêu chuẩn",
+          "color": "Đen"
+        },
+        "quantity": 1
+      }
+    ],
+    "shippingFee": 30000,
+    "paymentMethod": "BANK",
+    "total": 2000,
+    "discount": 0,
+    "voucherCode": "NONE",
+    "status": "cancelled"
+  },
+  {
+    "id": "ORD-1781889571027",
+    "date": "2026-06-19T17:19:31.027Z",
+    "customer": {
+      "name": "cuong",
+      "phone": "0365250826",
+      "address": "ancd"
+    },
+    "items": [
+      {
+        "id": 1,
+        "product": {
+          "name": "abcd",
+          "categoryId": 2,
+          "subCategory": "Kính râm Mắt mèo",
+          "price": 1000,
+          "originalPrice": 1498,
+          "image": "http://localhost:5000/uploads/product-1781889198084.jpg",
+          "stock": 50,
+          "details": [
+            {
+              "title": "Mô tả sản phẩm",
+              "content": "test tt"
+            }
+          ],
+          "sizes": [
+            "Tiêu chuẩn"
+          ],
+          "colors": [
+            {
+              "name": "Đen",
+              "hex": "#000000",
+              "image": "http://localhost:5000/uploads/product-1781889198084.jpg"
+            }
+          ],
+          "id": 3,
+          "category": {
+            "id": 2,
+            "name": "Kính râm",
+            "image": "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=200&h=200&fit=crop"
+          }
+        },
+        "options": {
+          "size": "Tiêu chuẩn",
+          "color": "Đen"
+        },
+        "quantity": 1
+      }
+    ],
+    "shippingFee": 30000,
+    "paymentMethod": "BANK",
+    "total": 1000,
+    "discount": 0,
+    "voucherCode": "NONE",
+    "status": "awaiting_payment"
+  },
+  {
+    "id": "ORD-1781889302904",
+    "date": "2026-06-19T17:15:02.904Z",
+    "customer": {
+      "name": "cuong",
+      "phone": "0365250826",
+      "address": "ancd"
+    },
+    "items": [
+      {
+        "id": 1,
+        "product": {
+          "name": "abcd",
+          "categoryId": 2,
+          "subCategory": "Kính râm Mắt mèo",
+          "price": 1000,
+          "originalPrice": 1498,
+          "image": "http://localhost:5000/uploads/product-1781889198084.jpg",
+          "stock": 50,
+          "details": [
+            {
+              "title": "Mô tả sản phẩm",
+              "content": "test tt"
+            }
+          ],
+          "sizes": [
+            "Tiêu chuẩn"
+          ],
+          "colors": [
+            {
+              "name": "Đen",
+              "hex": "#000000",
+              "image": "http://localhost:5000/uploads/product-1781889198084.jpg"
+            }
+          ],
+          "id": 3,
+          "category": {
+            "id": 2,
+            "name": "Kính râm",
+            "image": "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=200&h=200&fit=crop"
+          }
+        },
+        "options": {
+          "size": "Tiêu chuẩn",
+          "color": "Đen"
+        },
+        "quantity": 1
+      }
+    ],
+    "shippingFee": 30000,
+    "paymentMethod": "BANK",
+    "total": 1000,
+    "discount": 0,
+    "voucherCode": "NONE",
+    "status": "paid",
+    "paidAt": "2026-06-19T17:22:47.927Z",
+    "paymentGateway": "VietinBank"
+  },
+  {
+    "id": "ORD-1781885875473",
+    "date": "2026-06-19T16:17:55.473Z",
+    "customer": {
+      "name": "User Name",
+      "phone": "",
+      "address": ""
+    },
+    "items": [
+      {
+        "id": 1,
+        "product": {
+          "name": "Kính kk",
+          "categoryId": 1,
+          "subCategory": "Gọng kim loại",
+          "price": 300000,
+          "originalPrice": 349999,
+          "image": "http://localhost:5000/uploads/product-1781861530759.JPG",
+          "stock": 50,
+          "details": [
+            {
+              "title": "Mô tả sản phẩm",
+              "content": "abcd"
+            }
+          ],
+          "sizes": [
+            "Tiêu chuẩn"
+          ],
+          "colors": [
+            {
+              "name": "Màu đen",
+              "hex": "#000000",
+              "image": "http://localhost:5000/uploads/product-1781861530759.JPG"
+            },
+            {
+              "name": "Màu xanh",
+              "hex": "#34207e",
+              "image": "http://localhost:5000/uploads/product-1781861540290.JPG"
+            }
+          ],
+          "id": 1,
+          "category": {
+            "id": 1,
+            "name": "Gọng kính",
+            "image": "https://images.unsplash.com/photo-1591076482161-42ce6da69f67?w=200&h=200&fit=crop"
+          }
+        },
+        "options": {
+          "size": "Tiêu chuẩn",
+          "color": "Màu đen"
+        },
+        "quantity": 1
+      }
+    ],
+    "shippingFee": 30000,
+    "paymentMethod": "COD",
+    "total": 300000,
+    "discount": 0,
+    "voucherCode": "NONE",
+    "status": "pending"
+  },
+  {
+    "id": "ORD-1781874572565",
+    "date": "2026-06-19T13:09:32.565Z",
+    "customer": {
+      "name": "Lê Minh Anh",
+      "phone": "0987654321",
+      "address": "Số 88 Đường Láng, Đống Đa, Hà Nội"
+    },
+    "items": [
+      {
+        "id": 1,
+        "product": {
+          "name": "Kính haha",
+          "categoryId": 2,
+          "subCategory": "Kính râm Wayfarer",
+          "price": 25000,
+          "originalPrice": 30000,
+          "image": "http://localhost:5000/uploads/product-1781874534005.JPG",
+          "stock": 50,
+          "details": [
+            {
+              "title": "Mô tả sản phẩm",
+              "content": "abcdhquhdnkjsd"
+            }
+          ],
+          "sizes": [
+            "Tiêu chuẩn"
+          ],
+          "colors": [
+            {
+              "name": "Màu hồng",
+              "hex": "#8d1667",
+              "image": "http://localhost:5000/uploads/product-1781874534005.JPG"
+            }
+          ],
+          "id": 2,
+          "category": {
+            "id": 2,
+            "name": "Kính râm",
+            "image": "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=200&h=200&fit=crop"
+          }
+        },
+        "options": {
+          "size": "Tiêu chuẩn",
+          "color": "Màu hồng"
+        },
+        "quantity": 1
+      }
+    ],
+    "shippingFee": 30000,
+    "paymentMethod": "COD",
+    "total": 25000,
+    "discount": 0,
+    "voucherCode": "NONE",
+    "status": "pending"
+  },
+  {
+    "id": "ORD-1781861822496",
+    "date": "2026-06-19T09:37:02.496Z",
+    "customer": {
+      "name": "Lê Minh Anh",
+      "phone": "0987654321",
+      "address": "Số 88 Đường Láng, Đống Đa, Hà Nội"
+    },
+    "items": [
+      {
+        "id": 1,
+        "product": {
+          "name": "Kính kk",
+          "categoryId": 1,
+          "subCategory": "Gọng kim loại",
+          "price": 300000,
+          "originalPrice": 349999,
+          "image": "http://localhost:5000/uploads/product-1781861530759.JPG",
+          "stock": 50,
+          "details": [
+            {
+              "title": "Mô tả sản phẩm",
+              "content": "abcd"
+            }
+          ],
+          "sizes": [
+            "Tiêu chuẩn"
+          ],
+          "colors": [
+            {
+              "name": "Màu đen",
+              "hex": "#000000",
+              "image": "http://localhost:5000/uploads/product-1781861530759.JPG"
+            },
+            {
+              "name": "Màu xanh",
+              "hex": "#34207e",
+              "image": "http://localhost:5000/uploads/product-1781861540290.JPG"
+            }
+          ],
+          "id": 1,
+          "category": {
+            "id": 1,
+            "name": "Gọng kính",
+            "image": "https://images.unsplash.com/photo-1591076482161-42ce6da69f67?w=200&h=200&fit=crop"
+          }
+        },
+        "options": {
+          "size": "Tiêu chuẩn",
+          "color": "Màu xanh"
+        },
+        "quantity": 1
+      }
+    ],
+    "shippingFee": 30000,
+    "paymentMethod": "BANK",
+    "total": 300000,
+    "discount": 0,
+    "voucherCode": "NONE",
+    "status": "completed",
+    "paidAt": "2026-06-19T09:37:10.020Z"
+  }
+]
