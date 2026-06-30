@@ -9,10 +9,7 @@ const connectDB = async () => {
       console.warn("⚠️ CHƯA CÓ MONGODB_URI. Đang tạm bỏ qua kết nối CSDL để tránh crash server.");
       return;
     }
-    await mongoose.connect(mongoUri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    });
+    await mongoose.connect(mongoUri);
     console.log('MongoDB Connected successfully!');
   } catch (error) {
     console.error('MongoDB Connection Error:', error);
