@@ -4,6 +4,9 @@ const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
 
+// Mongoose Models and Connection
+const { connectDB, Banner, Category, Subcategory, Product, Order, Warranty } = require('./db');
+
 const app = express();
 const PORT = process.env.PORT || 5005;
 
@@ -22,10 +25,29 @@ app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
 
+// Basic Auth Middleware for Admin
+const adminAuth = (req, res, next) => {
+  const b64auth = (req.headers.authorization || '').split(' ')[1] || '';
+  const [login, password] = Buffer.from(b64auth, 'base64').toString().split(':');
+  if (login === 'admin' && password === (process.env.ADMIN_PASS || '123456')) {
+    return next();
+  }
+  res.set('WWW-Authenticate', 'Basic realm="401"');
+  res.status(401).send('Vui lòng đăng nhập để truy cập trang quản trị.');
+};
+
 // Serve static admin file
-app.get('/admin', (req, res) => {
+app.get('/admin', adminAuth, (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
+
+// Admin-only endpoints protection (Apply to modifying routes)
+const requireAdmin = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (authHeader) return adminAuth(req, res, next);
+  if (req.headers['x-admin-key'] === (process.env.ADMIN_PASS || '123456')) return next();
+  res.status(401).json({ error: 'Unauthorized' });
+};
 
 // Image upload endpoint
 app.post('/upload', upload.single('image'), (req, res) => {
@@ -36,104 +58,85 @@ app.post('/upload', upload.single('image'), (req, res) => {
   res.json({ success: true, url: imageUrl, filename: req.file.filename });
 });
 
-// Load static json files helper
-const loadJsonFile = (filename) => {
+// 1. GET /banners
+app.get('/banners', async (req, res) => {
   try {
-    const filePath = path.join(__dirname, 'data', filename);
-    const rawData = fs.readFileSync(filePath, 'utf8');
-    return JSON.parse(rawData);
+    const banners = await Banner.find();
+    res.json(banners.map(b => b.image));
   } catch (error) {
-    console.error(`Error loading ${filename}:`, error);
-    return [];
+    res.status(500).json({ error: 'Failed to fetch banners' });
   }
-};
-
-// Database storage simulated in memory + json file
-let orders = [];
-const ordersFilePath = path.join(__dirname, 'data', 'orders.json');
-try {
-  if (fs.existsSync(ordersFilePath)) {
-    orders = JSON.parse(fs.readFileSync(ordersFilePath, 'utf8'));
-  }
-} catch (e) {
-  console.log("No order database yet, starting fresh.");
-}
-
-// 1. GET /banners - Get home page slider banners
-app.get('/banners', (req, res) => {
-  const banners = loadJsonFile('banners.json');
-  res.json(banners);
 });
 
-// 2. GET /categories - Get list of eyewear categories
-app.get('/categories', (req, res) => {
-  const categories = loadJsonFile('categories.json');
-  res.json(categories);
-});
-
-// 3. GET /products - Get list of products
-app.get('/products', (req, res) => {
-  const products = loadJsonFile('products.json');
-  
-  // Optional query filter by categoryId
-  const categoryId = parseInt(req.query.categoryId);
-  if (!isNaN(categoryId)) {
-    const filtered = products.filter(p => p.categoryId === categoryId);
-    return res.json(filtered);
-  }
-  
-  res.json(products);
-});
-
-// GET /subcategories/:categoryId - Get subcategories for a category
-app.get('/subcategories/:categoryId', (req, res) => {
-  const allSubs = loadJsonFile('subcategories.json');
-  const subs = allSubs[req.params.categoryId] || [];
-  res.json(subs);
-});
-
-// GET /subcategories - Get all subcategories
-app.get('/subcategories', (req, res) => {
-  const allSubs = loadJsonFile('subcategories.json');
-  res.json(allSubs);
-});
-
-// POST /products - Add new product
-app.post('/products', (req, res) => {
-  const products = loadJsonFile('products.json');
-  const newProduct = req.body;
-  
-  // Assign new ID
-  const maxId = products.reduce((max, p) => p.id > max ? p.id : max, 0);
-  newProduct.id = maxId + 1;
-  
-  products.push(newProduct);
-  
+// 2. GET /categories
+app.get('/categories', async (req, res) => {
   try {
-    const filePath = path.join(__dirname, 'data', 'products.json');
-    fs.writeFileSync(filePath, JSON.stringify(products, null, 2), 'utf8');
+    const categories = await Category.find().sort({ id: 1 });
+    res.json(categories);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch categories' });
+  }
+});
+
+// 3. GET /products
+app.get('/products', async (req, res) => {
+  try {
+    const categoryId = parseInt(req.query.categoryId);
+    const query = !isNaN(categoryId) ? { categoryId } : {};
+    const products = await Product.find(query).sort({ id: 1 });
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch products' });
+  }
+});
+
+// GET /subcategories/:categoryId
+app.get('/subcategories/:categoryId', async (req, res) => {
+  try {
+    const categoryId = parseInt(req.params.categoryId);
+    const subcategory = await Subcategory.findOne({ categoryId });
+    res.json(subcategory ? subcategory.items : []);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch subcategories' });
+  }
+});
+
+// GET /subcategories
+app.get('/subcategories', async (req, res) => {
+  try {
+    const subcategories = await Subcategory.find();
+    const result = {};
+    subcategories.forEach(sub => {
+      result[sub.categoryId] = sub.items;
+    });
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch subcategories' });
+  }
+});
+
+// POST /products
+app.post('/products', requireAdmin, async (req, res) => {
+  try {
+    const newProductData = req.body;
+    const newProduct = await Product.create(newProductData);
     res.status(201).json({ success: true, product: newProduct });
   } catch (err) {
-    console.error('Error saving products:', err);
+    console.error('Error saving product:', err);
     res.status(500).json({ error: 'Failed to save product' });
   }
 });
 
-// DELETE /products/:id - Delete a product
-app.delete('/products/:id', (req, res) => {
-  const productId = parseInt(req.params.id);
-  let products = loadJsonFile('products.json');
-  
-  const initialLength = products.length;
-  products = products.filter(p => p.id != productId);
-  
-  if (products.length === initialLength) {
-    return res.status(404).json({ error: 'Product not found' });
-  }
-  
+// DELETE /products/:id
+app.delete('/products/:id', requireAdmin, async (req, res) => {
   try {
-    const filePath = path.join(__dirname, 'data', 'products.json');
-    fs.writeFileSync(filePath, JSON.stringify(products, null, 2), 'utf8');
+    const productId = parseInt(req.params.id);
+    const deletedProduct = await Product.findOneAndDelete({ id: productId });
+    
+    if (!deletedProduct) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+    
     res.json({ success: true, message: 'Product deleted successfully' });
   } catch (err) {
     console.error('Error deleting product:', err);
@@ -141,24 +144,19 @@ app.delete('/products/:id', (req, res) => {
   }
 });
 
-// PUT /products/:id - Edit a product
-app.put('/products/:id', (req, res) => {
-  const productId = parseInt(req.params.id);
-  let products = loadJsonFile('products.json');
-  
-  const index = products.findIndex(p => p.id == productId);
-  if (index === -1) {
-    return res.status(404).json({ error: 'Product not found' });
-  }
-  
-  // Merge updates into existing product
-  const updates = req.body;
-  products[index] = { ...products[index], ...updates, id: products[index].id };
-  
+// PUT /products/:id
+app.put('/products/:id', requireAdmin, async (req, res) => {
   try {
-    const filePath = path.join(__dirname, 'data', 'products.json');
-    fs.writeFileSync(filePath, JSON.stringify(products, null, 2), 'utf8');
-    res.json({ success: true, product: products[index] });
+    const productId = parseInt(req.params.id);
+    const updates = req.body;
+    
+    const updatedProduct = await Product.findOneAndUpdate({ id: productId }, updates, { new: true });
+    
+    if (!updatedProduct) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+    
+    res.json({ success: true, product: updatedProduct });
   } catch (err) {
     console.error('Error updating product:', err);
     res.status(500).json({ error: 'Failed to update product' });
@@ -166,274 +164,298 @@ app.put('/products/:id', (req, res) => {
 });
 
 // Helper: Decrease stock for order items
-function decreaseStock(items) {
-  const products = loadJsonFile('products.json');
-  let changed = false;
-  items.forEach(item => {
-    const product = products.find(p => p.id === item.product?.id || p.id === item.productId);
-    if (product && product.stock !== undefined) {
-      product.stock = Math.max(0, product.stock - (item.quantity || 1));
-      changed = true;
+async function decreaseStock(items) {
+  try {
+    for (const item of items) {
+      const productId = item.product?.id || item.productId;
+      if (productId) {
+        await Product.findOneAndUpdate({ id: productId }, { $inc: { stock: -(item.quantity || 1) } });
+      }
     }
-  });
-  if (changed) {
-    try {
-      fs.writeFileSync(path.join(__dirname, 'data', 'products.json'), JSON.stringify(products, null, 2), 'utf8');
-    } catch (err) {
-      console.error('Error updating stock:', err);
-    }
+  } catch (err) {
+    console.error('Error updating stock:', err);
   }
 }
 
 // Helper: Restore stock for cancelled order items
-function restoreStock(items) {
-  const products = loadJsonFile('products.json');
-  let changed = false;
-  items.forEach(item => {
-    const product = products.find(p => p.id === item.product?.id || p.id === item.productId);
-    if (product && product.stock !== undefined) {
-      product.stock += (item.quantity || 1);
-      changed = true;
+async function restoreStock(items) {
+  try {
+    for (const item of items) {
+      const productId = item.product?.id || item.productId;
+      if (productId) {
+        await Product.findOneAndUpdate({ id: productId }, { $inc: { stock: (item.quantity || 1) } });
+      }
     }
-  });
-  if (changed) {
-    try {
-      fs.writeFileSync(path.join(__dirname, 'data', 'products.json'), JSON.stringify(products, null, 2), 'utf8');
-    } catch (err) {
-      console.error('Error restoring stock:', err);
-    }
+  } catch (err) {
+    console.error('Error restoring stock:', err);
   }
 }
 
-// 4. POST /orders - Create new order from Zalo Mini App
-app.post('/orders', (req, res) => {
-  const orderData = req.body;
-  if (!orderData || !orderData.items || orderData.items.length === 0) {
-    return res.status(400).json({ error: 'Order items are required' });
-  }
-
-  // Determine initial status based on payment method
-  const needsPaymentConfirmation = orderData.paymentMethod === 'BANK' || orderData.paymentMethod === 'ZALOPAY';
-
-  // Create a structured order record
-  const newOrder = {
-    id: `ORD-${Date.now()}`,
-    date: new Date().toISOString(),
-    customer: orderData.customer || { name: 'Anonymous', phone: '', address: '' },
-    items: orderData.items,
-    shippingFee: orderData.shippingFee || 30000,
-    paymentMethod: orderData.paymentMethod || 'COD',
-    total: orderData.total,
-    discount: orderData.discount || 0,
-    voucherCode: orderData.voucherCode || 'NONE',
-    status: needsPaymentConfirmation ? 'awaiting_payment' : 'pending'
-  };
-
-  // Decrease product stock
-  decreaseStock(newOrder.items);
-
-  orders.unshift(newOrder);
-
-  // Persist order to local JSON database
+// 4. POST /orders
+app.post('/orders', async (req, res) => {
   try {
-    fs.writeFileSync(ordersFilePath, JSON.stringify(orders, null, 2), 'utf8');
-  } catch (err) {
-    console.error('Error writing orders database:', err);
-  }
-
-  // ZaloPay: auto-confirmed by ZaloPay callback (simulated with 5s delay)
-  if (newOrder.paymentMethod === 'ZALOPAY') {
-    console.log(`[ZaloPay] Order ${newOrder.id} - chờ ZaloPay callback xác nhận...`);
-    setTimeout(() => {
-      const idx = orders.findIndex(o => o.id === newOrder.id);
-      if (idx !== -1 && orders[idx].status === 'awaiting_payment') {
-        orders[idx].status = 'paid';
-        orders[idx].paidAt = new Date().toISOString();
-        orders[idx].paymentGateway = 'zalopay';
-        try {
-          fs.writeFileSync(ordersFilePath, JSON.stringify(orders, null, 2), 'utf8');
-        } catch (err) {
-          console.error('Error updating ZaloPay payment:', err);
-        }
-        console.log(`[ZaloPay] ✅ Payment CONFIRMED for order ${newOrder.id} via ZaloPay callback`);
-      }
-    }, 5000);
-  }
-
-  // BANK: admin xác nhận thủ công hoặc Casso/SePay webhook
-  if (newOrder.paymentMethod === 'BANK') {
-    console.log(`[VietQR] Order ${newOrder.id} - chờ admin xác nhận chuyển khoản ${newOrder.total}đ`);
-  }
-
-  console.log(`New Order received successfully: ${newOrder.id}`);
-  res.status(201).json({ success: true, order: newOrder });
-});
-
-// WEBHOOK: Third-party payment verification (Casso, SePay, PayOS, etc.)
-// Dịch vụ bên thứ 3 gọi endpoint này khi phát hiện giao dịch chuyển khoản mới
-// Docs: https://docs.casso.vn/webhook | https://docs.sepay.vn/webhook
-app.post('/webhook/payment', (req, res) => {
-  const { transferAmount, description, content, gateway } = req.body;
-
-  // SePay dùng 'content', Casso dùng 'description'
-  const transactionContent = content || description || '';
-  const actualAmount = transferAmount ? Number(transferAmount) : 0;
-
-  // Trích xuất mã đơn hàng - hỗ trợ cả ORD-xxx và ORDxxx (ngân hàng có thể bỏ dấu -)
-  const orderIdMatch = transactionContent.match(/ORD[- ]?(\d+)/i);
-  
-  if (!orderIdMatch) {
-    console.log(`[Webhook] Received transfer but no order ID found in: "${transactionContent}"`);
-    return res.json({ success: false, message: 'No matching order ID in transfer description' });
-  }
-
-  // Luôn tạo lại dạng chuẩn ORD-xxxxx để khớp với database
-  const orderId = `ORD-${orderIdMatch[1]}`;
-  const orderIndex = orders.findIndex(o => o.id === orderId);
-
-  if (orderIndex === -1) {
-    console.log(`[Webhook] Order ${orderId} not found`);
-    return res.status(404).json({ success: false, message: 'Order not found' });
-  }
-
-  const order = orders[orderIndex];
-
-  // Kiểm tra số tiền khớp (cho phép chênh lệch nhẹ hoặc bằng/lớn hơn số tiền đơn hàng)
-  if (actualAmount < order.total) {
-    console.log(`[Webhook] Amount mismatch: received ${actualAmount}, expected ${order.total}`);
-    return res.json({ success: false, message: 'Transfer amount does not match order total' });
-  }
-
-  // Xác nhận thanh toán
-  if (order.status === 'awaiting_payment') {
-    orders[orderIndex].status = 'paid';
-    orders[orderIndex].paidAt = new Date().toISOString();
-    orders[orderIndex].paymentGateway = gateway || 'sepay_webhook';
-
-    try {
-      fs.writeFileSync(ordersFilePath, JSON.stringify(orders, null, 2), 'utf8');
-    } catch (err) {
-      console.error('Error updating payment status:', err);
+    const orderData = req.body;
+    if (!orderData || !orderData.items || orderData.items.length === 0) {
+      return res.status(400).json({ error: 'Order items are required' });
     }
 
-    console.log(`[Webhook] ✅ Payment CONFIRMED for order ${orderId} via ${gateway || 'sepay_webhook'}`);
-    return res.json({ success: true, message: `Order ${orderId} payment confirmed` });
-  }
+    const needsPaymentConfirmation = orderData.paymentMethod === 'BANK' || orderData.paymentMethod === 'ZALOPAY';
 
-  res.json({ success: false, message: `Order ${orderId} status is already: ${order.status}` });
+    const orderId = `ORD-${Date.now()}`;
+    const newOrder = await Order.create({
+      id: orderId,
+      date: new Date().toISOString(),
+      customer: orderData.customer || { name: 'Anonymous', phone: '', address: '' },
+      items: orderData.items,
+      shippingFee: orderData.shippingFee || 30000,
+      paymentMethod: orderData.paymentMethod || 'COD',
+      total: orderData.total,
+      discount: orderData.discount || 0,
+      voucherCode: orderData.voucherCode || 'NONE',
+      status: needsPaymentConfirmation ? 'awaiting_payment' : 'pending'
+    });
+
+    // Decrease product stock
+    await decreaseStock(newOrder.items);
+
+    if (newOrder.paymentMethod === 'ZALOPAY') {
+      console.log(`[ZaloPay] Order ${newOrder.id} - Đang chờ khách hàng thanh toán qua ví ZaloPay...`);
+    }
+
+    if (newOrder.paymentMethod === 'BANK') {
+      console.log(`[VietQR] Order ${newOrder.id} - chờ khách chuyển khoản ${newOrder.total}đ. Tự động xác nhận qua SePay/Casso webhook.`);
+    }
+
+    console.log(`New Order received successfully: ${newOrder.id}`);
+    res.status(201).json({ success: true, order: newOrder });
+  } catch (error) {
+    console.error('Error creating order:', error);
+    res.status(500).json({ error: 'Failed to create order' });
+  }
 });
 
-// PUT /orders/:id - Update order status (mark completed)
-app.put('/orders/:id', (req, res) => {
-  const orderId = req.params.id;
-  const { status, customer } = req.body;
-  
-  const orderIndex = orders.findIndex(o => o.id === orderId);
-  if (orderIndex === -1) {
-    return res.status(404).json({ error: 'Order not found' });
-  }
-
-  const oldStatus = orders[orderIndex].status;
-  const newStatus = status || oldStatus;
-
-  // Restore stock when cancelling
-  if (newStatus === 'cancelled' && oldStatus !== 'cancelled') {
-    restoreStock(orders[orderIndex].items);
-    orders[orderIndex].cancelledAt = new Date().toISOString();
-    console.log(`[Stock] ✅ Stock restored for cancelled order ${orderId}`);
-  }
-
-  orders[orderIndex].status = newStatus;
-
-  // Update customer/delivery info if provided
-  if (customer) {
-    orders[orderIndex].customer = { ...orders[orderIndex].customer, ...customer };
-  }
-  
-  // Track payment confirmation time
-  if (newStatus === 'paid' && !orders[orderIndex].paidAt) {
-    orders[orderIndex].paidAt = new Date().toISOString();
-  }
-  
+// WEBHOOK: Third-party payment verification
+app.post('/webhook/payment', async (req, res) => {
   try {
-    fs.writeFileSync(ordersFilePath, JSON.stringify(orders, null, 2), 'utf8');
-    res.json({ success: true, order: orders[orderIndex] });
+    const { transferAmount, description, content, gateway } = req.body;
+
+    const transactionContent = content || description || '';
+    const actualAmount = transferAmount ? Number(transferAmount) : 0;
+
+    const orderIdMatch = transactionContent.match(/ORD[- ]?(\d+)/i);
+    if (!orderIdMatch) {
+      console.log(`[Webhook] Received transfer but no order ID found in: "${transactionContent}"`);
+      return res.json({ success: false, message: 'No matching order ID in transfer description' });
+    }
+
+    const orderId = `ORD-${orderIdMatch[1]}`;
+    const order = await Order.findOne({ id: orderId });
+
+    if (!order) {
+      console.log(`[Webhook] Order ${orderId} not found`);
+      return res.status(404).json({ success: false, message: 'Order not found' });
+    }
+
+    if (actualAmount < order.total) {
+      console.log(`[Webhook] Amount mismatch: received ${actualAmount}, expected ${order.total}`);
+      return res.json({ success: false, message: 'Transfer amount does not match order total' });
+    }
+
+    if (order.status === 'awaiting_payment') {
+      order.status = 'paid';
+      order.paidAt = new Date().toISOString();
+      order.paymentGateway = gateway || 'sepay_webhook';
+      await order.save();
+
+      console.log(`[Webhook] ✅ Payment CONFIRMED for order ${orderId} via ${gateway || 'sepay_webhook'}`);
+      return res.json({ success: true, message: `Order ${orderId} payment confirmed` });
+    }
+
+    res.json({ success: false, message: `Order ${orderId} status is already: ${order.status}` });
+  } catch (error) {
+    console.error('Error in webhook:', error);
+    res.status(500).json({ error: 'Webhook processing failed' });
+  }
+});
+
+// PUT /orders/:id
+app.put('/orders/:id', requireAdmin, async (req, res) => {
+  try {
+    const orderId = req.params.id;
+    const { status, customer } = req.body;
+    
+    const order = await Order.findOne({ id: orderId });
+    if (!order) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
+
+    const oldStatus = order.status;
+    const newStatus = status || oldStatus;
+
+    if (newStatus === 'cancelled' && oldStatus !== 'cancelled') {
+      await restoreStock(order.items);
+      order.cancelledAt = new Date().toISOString();
+      console.log(`[Stock] ✅ Stock restored for cancelled order ${orderId}`);
+    }
+
+    order.status = newStatus;
+
+    if (customer) {
+      order.customer = { ...order.customer, ...customer };
+    }
+    
+    if (newStatus === 'paid' && !order.paidAt) {
+      order.paidAt = new Date().toISOString();
+    }
+    
+    await order.save();
+    res.json({ success: true, order: order });
   } catch (err) {
     console.error('Error updating order:', err);
     res.status(500).json({ error: 'Failed to update order' });
   }
 });
 
-// 5. GET /orders/:id - Get single order (for payment polling)
-app.get('/orders/:id', (req, res) => {
-  const order = orders.find(o => o.id === req.params.id);
-  if (!order) {
-    return res.status(404).json({ error: 'Order not found' });
-  }
-  res.json(order);
-});
-
-// GET /orders/customer/:phone - Get orders by customer phone
-app.get('/orders/customer/:phone', (req, res) => {
-  const phone = req.params.phone;
-  const customerOrders = orders.filter(o => o.customer && o.customer.phone === phone);
-  res.json(customerOrders);
-});
-
-// 6. GET /orders - Get list of placed orders (for admin review)
-app.get('/orders', (req, res) => {
-  res.json(orders);
-});
-
-// Database storage for warranties
-let warranties = [];
-const warrantiesFilePath = path.join(__dirname, 'data', 'warranties.json');
-try {
-  if (fs.existsSync(warrantiesFilePath)) {
-    warranties = JSON.parse(fs.readFileSync(warrantiesFilePath, 'utf8'));
-  }
-} catch (e) {
-  console.log("No warranty database yet, starting fresh.");
-}
-
-// 6. POST /warranty/activate - Activate warranty and trigger ZNS
-app.post('/warranty/activate', (req, res) => {
-  const { name, phone } = req.body;
-  if (!phone) {
-    return res.status(400).json({ error: 'Phone number is required' });
-  }
-
-  const exists = warranties.some(w => w.phone === phone);
-  if (exists) {
-    return res.status(400).json({ error: 'Số điện thoại này đã kích hoạt bảo hành trước đó!' });
-  }
-
-  const newWarranty = {
-    id: `WR-${Date.now()}`,
-    date: new Date().toISOString(),
-    name: name || 'Khách hàng Zalo',
-    phone: phone,
-    rewardAmount: 30000,
-    znsStatus: 'sent',
-    znsMessage: `Cảm ơn ${name || 'Quý khách'} đã mua sản phẩm kính mắt tại Andu Eyewear. Chế độ bảo hành 12 tháng đã được kích hoạt thành công cho số điện thoại ${phone}. Voucher 30.000đ đã được cộng vào ví của bạn.`
-  };
-
-  warranties.unshift(newWarranty);
-
+// 5. GET /orders/:id
+app.get('/orders/:id', async (req, res) => {
   try {
-    fs.writeFileSync(warrantiesFilePath, JSON.stringify(warranties, null, 2), 'utf8');
-  } catch (err) {
-    console.error('Error writing warranties database:', err);
+    const order = await Order.findOne({ id: req.params.id });
+    if (!order) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
+    res.json(order);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch order' });
   }
-
-  res.status(201).json({ success: true, warranty: newWarranty });
 });
 
-// 7. GET /warranty - Retrieve warranty logs
-app.get('/warranty', (req, res) => {
-  res.json(warranties);
+// GET /orders/customer/:phone
+app.get('/orders/customer/:phone', async (req, res) => {
+  try {
+    const phone = req.params.phone;
+    const orders = await Order.find({ "customer.phone": phone }).sort({ createdAt: -1 });
+    res.json(orders);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch customer orders' });
+  }
 });
 
-app.listen(PORT, () => {
-  console.log(`Andu Eyewear Backend is running on port ${PORT}`);
+// 6. GET /orders
+app.get('/orders', async (req, res) => {
+  try {
+    const orders = await Order.find().sort({ createdAt: -1 });
+    res.json(orders);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch orders' });
+  }
+});
+
+// 6. POST /warranty/activate
+app.post('/warranty/activate', async (req, res) => {
+  try {
+    const { name, phone } = req.body;
+    if (!phone) {
+      return res.status(400).json({ error: 'Phone number is required' });
+    }
+
+    const exists = await Warranty.findOne({ phone });
+    if (exists) {
+      return res.status(400).json({ error: 'Số điện thoại này đã kích hoạt bảo hành trước đó!' });
+    }
+
+    const znsMsg = `Cảm ơn ${name || 'Quý khách'} đã mua sản phẩm kính mắt tại Andu Eyewear. Chế độ bảo hành 12 tháng đã được kích hoạt thành công cho số điện thoại ${phone}. Voucher 30.000đ đã được cộng vào ví của bạn.`;
+
+    const newWarranty = await Warranty.create({
+      id: `WR-${Date.now()}`,
+      date: new Date().toISOString(),
+      name: name || 'Khách hàng Zalo',
+      phone: phone,
+      rewardAmount: 30000,
+      znsStatus: 'sent',
+      znsMessage: znsMsg
+    });
+    
+    console.log(`[ZNS API] Mocking real ZNS call for ${phone}: ${znsMsg}`);
+
+    res.status(201).json({ success: true, warranty: newWarranty });
+  } catch (error) {
+    console.error('Error activating warranty:', error);
+    res.status(500).json({ error: 'Failed to activate warranty' });
+  }
+});
+
+// 7. GET /warranty
+app.get('/warranty', async (req, res) => {
+  try {
+    const warranties = await Warranty.find().sort({ createdAt: -1 });
+    res.json(warranties);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch warranties' });
+  }
+});
+
+// --- AUTO SEED LOGIC ---
+const loadJsonFile = (filename) => {
+  try {
+    const filePath = path.join(__dirname, 'data', filename);
+    if (fs.existsSync(filePath)) {
+      return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    }
+  } catch (error) {
+    console.error(`Error loading ${filename}:`, error);
+  }
+  return null;
+};
+
+const initializeDatabase = async () => {
+  try {
+    // Only seed if MongoDB URI is provided
+    if (!process.env.MONGODB_URI) return;
+    
+    const bannerCount = await Banner.countDocuments();
+    if (bannerCount === 0) {
+      console.log('MongoDB empty. Running auto-seed from JSON files...');
+      
+      const banners = loadJsonFile('banners.json');
+      if (banners?.length) {
+        const bannerDocs = banners.map(url => ({ image: url }));
+        await Banner.insertMany(bannerDocs);
+      }
+
+      const categories = loadJsonFile('categories.json');
+      if (categories?.length) await Category.insertMany(categories);
+
+      const subcategories = loadJsonFile('subcategories.json');
+      if (subcategories) {
+        const subDocs = Object.entries(subcategories).map(([categoryId, items]) => ({
+          categoryId: parseInt(categoryId),
+          items
+        }));
+        if (subDocs.length) await Subcategory.insertMany(subDocs);
+      }
+
+      const products = loadJsonFile('products.json');
+      if (products?.length) await Product.insertMany(products);
+
+      const orders = loadJsonFile('orders.json');
+      if (orders?.length) await Order.insertMany(orders);
+
+      const warranties = loadJsonFile('warranties.json');
+      if (warranties?.length) await Warranty.insertMany(warranties);
+      
+      console.log('MongoDB auto-seed completed successfully!');
+    }
+  } catch (error) {
+    console.error('Database initialization failed:', error);
+  }
+};
+
+// Start server
+connectDB().then(() => {
+  initializeDatabase().then(() => {
+    app.listen(PORT, () => {
+      console.log(`Andu Eyewear Backend is running on port ${PORT}`);
+      console.log(`Connected to MongoDB Atlas / Local`);
+    });
+  });
 });
